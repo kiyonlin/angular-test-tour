@@ -6,16 +6,16 @@ import { By } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { RouterLinkDirectiveStub } from '../testing';
 
-@Component({selector: 'app-banner', template: ''})
-class BannerStubComponent {}
+@Component({ selector: 'app-banner', template: '' })
+class BannerStubComponent { }
 
-@Component({selector: 'router-outlet', template: ''})
+@Component({ selector: 'router-outlet', template: '' })
 class RouterOutletStubComponent { }
 
-@Component({selector: 'app-welcome', template: ''})
-class WelcomeStubComponent {}
+@Component({ selector: 'app-welcome', template: '' })
+class WelcomeStubComponent { }
 
-let comp:    AppComponent;
+let comp: AppComponent;
 let fixture: ComponentFixture<AppComponent>;
 
 describe('AppComponent & TestModule', () => {
@@ -29,10 +29,10 @@ describe('AppComponent & TestModule', () => {
         WelcomeStubComponent
       ]
     })
-    .compileComponents().then(() => {
-      fixture = TestBed.createComponent(AppComponent);
-      comp    = fixture.componentInstance;
-    });
+      .compileComponents().then(() => {
+        fixture = TestBed.createComponent(AppComponent);
+        comp = fixture.componentInstance;
+      });
   }));
   tests();
 });
@@ -46,12 +46,12 @@ describe('AppComponent & NO_ERRORS_SCHEMA', () => {
         BannerStubComponent,
         RouterLinkDirectiveStub
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      schemas: [NO_ERRORS_SCHEMA]
     })
-    .compileComponents().then(() => {
-      fixture = TestBed.createComponent(AppComponent);
-      comp    = fixture.componentInstance;
-    });
+      .compileComponents().then(() => {
+        fixture = TestBed.createComponent(AppComponent);
+        comp = fixture.componentInstance;
+      });
   }));
   tests();
 });
@@ -59,7 +59,7 @@ describe('AppComponent & NO_ERRORS_SCHEMA', () => {
 //////// Testing w/ real root module //////
 // Tricky because we are disabling the router and its configuration
 // Better to use RouterTestingModule
-import { AppModule }    from './app.module';
+import { AppModule } from './app.module';
 import { AppRoutingModule } from './app-routing.module';
 
 describe('AppComponent & AppModule', () => {
@@ -67,26 +67,26 @@ describe('AppComponent & AppModule', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      imports: [ AppModule ]
+      imports: [AppModule]
     })
 
-    // Get rid of app's Router configuration otherwise many failures.
-    // Doing so removes Router declarations; add the Router stubs
-    .overrideModule(AppModule, {
-      remove: {
-        imports: [ AppRoutingModule ]
-      },
-      add: {
-        declarations: [ RouterLinkDirectiveStub, RouterOutletStubComponent ]
-      }
-    })
+      // Get rid of app's Router configuration otherwise many failures.
+      // Doing so removes Router declarations; add the Router stubs
+      .overrideModule(AppModule, {
+        remove: {
+          imports: [AppRoutingModule]
+        },
+        add: {
+          declarations: [RouterLinkDirectiveStub, RouterOutletStubComponent]
+        }
+      })
 
-    .compileComponents()
+      .compileComponents()
 
-    .then(() => {
-      fixture = TestBed.createComponent(AppComponent);
-      comp    = fixture.componentInstance;
-    });
+      .then(() => {
+        fixture = TestBed.createComponent(AppComponent);
+        comp = fixture.componentInstance;
+      });
   }));
 
   tests();
@@ -112,14 +112,14 @@ function tests() {
     expect(comp).not.toBeNull();
   });
 
-  it('can get RouterLinks from template', () => {
+  it('从模版中获取 RouterLinks', () => {
     expect(routerLinks.length).toBe(3, 'should have 3 routerLinks');
     expect(routerLinks[0].linkParams).toBe('/dashboard');
     expect(routerLinks[1].linkParams).toBe('/heroes');
     expect(routerLinks[2].linkParams).toBe('/about');
   });
 
-  it('can click Heroes link in template', () => {
+  it('可以点击模版中的 Heroes 连接', () => {
     const heroesLinkDe = linkDes[1];   // heroes link DebugElement
     const heroesLink = routerLinks[1]; // heroes link directive
 

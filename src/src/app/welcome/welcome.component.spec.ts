@@ -79,37 +79,37 @@ describe('WelcomeComponent', () => {
     el = fixture.nativeElement.querySelector('.welcome');
   });
 
-  it('should welcome the user', () => {
+  it('应该欢迎登录用户', () => {
     fixture.detectChanges();
     const content = el.textContent;
-    expect(content).toContain('Welcome', '"Welcome ..."');
-    expect(content).toContain('Test User', 'expected name');
+    expect(content).toContain('Welcome', '"欢迎 ..."');
+    expect(content).toContain('Test User', '期望的用户名');
   });
 
-  it('should welcome "Bubba"', () => {
-    userService.user.name = 'Bubba'; // welcome message hasn't been shown yet
+  it('应该欢迎 "张三"', () => {
+    userService.user.name = '张三'; // welcome message hasn't been shown yet
     fixture.detectChanges();
-    expect(el.textContent).toContain('Bubba');
+    expect(el.textContent).toContain('张三');
   });
 
-  it('should request login if not logged in', () => {
+  it('未登录时提醒登录', () => {
     userService.isLoggedIn = false; // welcome message hasn't been shown yet
     fixture.detectChanges();
     const content = el.textContent;
-    expect(content).not.toContain('Welcome', 'not welcomed');
+    expect(content).not.toContain('Welcome', '没有欢迎');
     expect(content).toMatch(/log in/i, '"log in"');
   });
 
-  it('should inject the component\'s UserService instance',
+  it('应该注入组件的 UserService 实例',
     inject([UserService], (service: UserService) => {
       expect(service).toBe(componentUserService);
     }));
 
-  it('TestBed and Component UserService should be the same', () => {
+  it('测试机床和组件的 UserService 应该相同', () => {
     expect(userService === componentUserService).toBe(true);
   });
 
-  it('stub object and injected UserService should not be the same', () => {
+  it('桩对象和注入的 UserService 不应该相同', () => {
     expect(userServiceStub === userService).toBe(false);
 
     // Changing the stub object has no effect on the injected service

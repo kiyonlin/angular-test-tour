@@ -24,7 +24,7 @@ describe('DashboardHeroComponent class only', () => {
   });
 });
 
-describe('DashboardHeroComponent when tested directly', () => {
+describe('直接测试DashboardHeroComponent', () => {
 
   let comp: DashboardHeroComponent;
   let expectedHero: Hero;
@@ -57,12 +57,12 @@ describe('DashboardHeroComponent when tested directly', () => {
     fixture.detectChanges();
   });
 
-  it('should display hero name in uppercase', () => {
+  it('应该用大写字母显示英雄名称', () => {
     const expectedPipedName = expectedHero.name.toUpperCase();
     expect(heroEl.textContent).toContain(expectedPipedName);
   });
 
-  it('should raise selected event when clicked (triggerEventHandler)', () => {
+  it('当点击 (triggerEventHandler) 后应该引发 selected 事件', () => {
     let selectedHero: Hero;
     comp.selected.subscribe((hero: Hero) => selectedHero = hero);
 
@@ -70,7 +70,7 @@ describe('DashboardHeroComponent when tested directly', () => {
     expect(selectedHero).toBe(expectedHero);
   });
 
-  it('should raise selected event when clicked (element.click)', () => {
+  it('当点击 (element.click) 后应该引发 selected 事件', () => {
     let selectedHero: Hero;
     comp.selected.subscribe((hero: Hero) => selectedHero = hero);
 
@@ -78,7 +78,7 @@ describe('DashboardHeroComponent when tested directly', () => {
     expect(selectedHero).toBe(expectedHero);
   });
 
-  it('should raise selected event when clicked (click helper)', () => {
+  it('当点击 (click helper) 后应该引发 selected 事件', () => {
     let selectedHero: Hero;
     comp.selected.subscribe(hero => selectedHero = hero);
 
@@ -91,7 +91,7 @@ describe('DashboardHeroComponent when tested directly', () => {
 
 //////////////////
 
-describe('DashboardHeroComponent when inside a test host', () => {
+describe('DashboardHeroComponent 在测试宿主中', () => {
   let testHost: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
   let heroEl: HTMLElement;
@@ -111,12 +111,12 @@ describe('DashboardHeroComponent when inside a test host', () => {
     fixture.detectChanges(); // trigger initial data binding
   });
 
-  it('should display hero name', () => {
+  it('应该显示大写的英雄名称', () => {
     const expectedPipedName = testHost.hero.name.toUpperCase();
     expect(heroEl.textContent).toContain(expectedPipedName);
   });
 
-  it('should raise selected event when clicked', () => {
+  it('点击英雄元素后，应该引发 selected 事件', () => {
     click(heroEl);
     // selected hero should be the same data bound hero
     expect(testHost.selectedHero).toBe(testHost.hero);

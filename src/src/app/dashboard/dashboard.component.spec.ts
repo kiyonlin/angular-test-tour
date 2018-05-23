@@ -1,17 +1,16 @@
-import { async, inject, ComponentFixture, TestBed
-} from '@angular/core/testing';
+import { async, inject, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { addMatchers, asyncData, click } from '../../testing';
-import { HeroService }   from '../model/hero.service';
+import { HeroService } from '../model/hero.service';
 import { getTestHeroes } from '../model/testing/test-heroes';
 
-import { By }     from '@angular/platform-browser';
+import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import { DashboardComponent } from './dashboard.component';
-import { DashboardModule }    from './dashboard.module';
+import { DashboardModule } from './dashboard.module';
 
-beforeEach ( addMatchers );
+beforeEach(addMatchers);
 
 let comp: DashboardComponent;
 let fixture: ComponentFixture<DashboardComponent>;
@@ -21,7 +20,7 @@ let fixture: ComponentFixture<DashboardComponent>;
 describe('DashboardComponent (deep)', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ DashboardModule ]
+      imports: [DashboardModule]
     });
   });
 
@@ -43,8 +42,8 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 describe('DashboardComponent (shallow)', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ DashboardComponent ],
-      schemas:      [NO_ERRORS_SCHEMA]
+      declarations: [DashboardComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     });
   });
 
@@ -68,16 +67,16 @@ function compileAndCreate() {
     TestBed.configureTestingModule({
       providers: [
         { provide: HeroService, useValue: heroServiceSpy },
-        { provide: Router,      useValue: routerSpy }
+        { provide: Router, useValue: routerSpy }
       ]
     })
-    .compileComponents().then(() => {
-      fixture = TestBed.createComponent(DashboardComponent);
-      comp = fixture.componentInstance;
+      .compileComponents().then(() => {
+        fixture = TestBed.createComponent(DashboardComponent);
+        comp = fixture.componentInstance;
 
-      // getHeroes spy returns observable of test heroes
-      heroServiceSpy.getHeroes.and.returnValue(asyncData(getTestHeroes()));
-    });
+        // getHeroes spy returns observable of test heroes
+        heroServiceSpy.getHeroes.and.returnValue(asyncData(getTestHeroes()));
+      });
   }));
 }
 
@@ -87,43 +86,43 @@ function compileAndCreate() {
  */
 function tests(heroClick: Function) {
 
-  it('should NOT have heroes before ngOnInit', () => {
+  it('ngOnInit 之前不应该有 heroes', () => {
     expect(comp.heroes.length).toBe(0,
       'should not have heroes before ngOnInit');
   });
 
-  it('should NOT have heroes immediately after ngOnInit', () => {
+  it('ngOnInit 调用之后不会立即有 heroes', () => {
     fixture.detectChanges(); // runs initial lifecycle hooks
 
     expect(comp.heroes.length).toBe(0,
       'should not have heroes until service promise resolves');
   });
 
-  describe('after get dashboard heroes', () => {
+  describe('获取 heroes 后', () => {
 
     let router: Router;
 
-     // Trigger component so it gets heroes and binds to them
-     beforeEach(async(() => {
-        router = fixture.debugElement.injector.get(Router);
-        fixture.detectChanges(); // runs ngOnInit -> getHeroes
-        fixture.whenStable() // No need for the `lastPromise` hack!
-          .then(() => fixture.detectChanges()); // bind to heroes
-     }));
+    // Trigger component so it gets heroes and binds to them
+    beforeEach(async(() => {
+      router = fixture.debugElement.injector.get(Router);
+      fixture.detectChanges(); // runs ngOnInit -> getHeroes
+      fixture.whenStable() // No need for the `lastPromise` hack!
+        .then(() => fixture.detectChanges()); // bind to heroes
+    }));
 
-    it('should HAVE heroes', () => {
+    it('应该有 heroes', () => {
       expect(comp.heroes.length).toBeGreaterThan(0,
         'should have heroes after service promise resolves');
     });
 
-    it('should DISPLAY heroes', () => {
+    it('应该显示 heroes', () => {
       // Find and examine the displayed heroes
       // Look for them in the DOM by css class
       const heroes = fixture.nativeElement.querySelectorAll('dashboard-hero');
       expect(heroes.length).toBe(4, 'should display 4 heroes');
     });
 
-    it('should tell ROUTER to navigate when hero clicked', () => {
+    it('hero 被点击后应该告诉 ROUTER 进行导航', () => {
 
       heroClick(); // trigger click on first inner <div class="hero">
 

@@ -2,16 +2,16 @@ import {
   async, ComponentFixture, fakeAsync, inject, TestBed, tick
 } from '@angular/core/testing';
 
-import { Router }       from '@angular/router';
+import { Router } from '@angular/router';
 
 import {
   ActivatedRoute, ActivatedRouteStub, asyncData, click, newEvent
 } from '../../testing';
 
-import { Hero }                from '../model/hero';
+import { Hero } from '../model/hero';
 import { HeroDetailComponent } from './hero-detail.component';
-import { HeroDetailService }   from './hero-detail.service';
-import { HeroModule }          from './hero.module';
+import { HeroDetailService } from './hero-detail.service';
+import { HeroModule } from './hero.module';
 
 ////// Testing Vars //////
 let activatedRoute: ActivatedRouteStub;
@@ -34,7 +34,7 @@ describe('HeroDetailComponent', () => {
 
 function overrideSetup() {
   class HeroDetailServiceSpy {
-    testHero: Hero = {id: 42, name: 'Test Hero' };
+    testHero: Hero = { id: 42, name: 'Test Hero' };
 
     /* emit cloned test hero */
     getHero = jasmine.createSpy('getHero').and.callFake(
@@ -55,25 +55,26 @@ function overrideSetup() {
     const routerSpy = createRouterSpy();
 
     TestBed.configureTestingModule({
-      imports:   [ HeroModule ],
+      imports: [HeroModule],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: Router,         useValue: routerSpy},
+        { provide: Router, useValue: routerSpy },
         // HeroDetailService at this level is IRRELEVANT!
         { provide: HeroDetailService, useValue: {} }
       ]
     })
 
-    // Override component's own provider
-    .overrideComponent(HeroDetailComponent, {
-      set: {
-        providers: [
-          { provide: HeroDetailService, useClass: HeroDetailServiceSpy }
-        ]
-      }
-    })
+      // Override component's own provider
+      // TestBed 还提供了类似的 overrideDirective、overrideModule 和 overridePipe 方法
+      .overrideComponent(HeroDetailComponent, {
+        set: {
+          providers: [
+            { provide: HeroDetailService, useClass: HeroDetailServiceSpy }
+          ]
+        }
+      })
 
-    .compileComponents();
+      .compileComponents();
   }));
 
   let hdsSpy: HeroDetailServiceSpy;
@@ -84,15 +85,15 @@ function overrideSetup() {
     hdsSpy = fixture.debugElement.injector.get(HeroDetailService) as any;
   }));
 
-  it('should have called `getHero`', () => {
+  it('应该调用 `getHero`', () => {
     expect(hdsSpy.getHero.calls.count()).toBe(1, 'getHero called once');
   });
 
-  it('should display stub hero\'s name', () => {
+  it('应该显示桩英雄数据的名称', () => {
     expect(page.nameDisplay.textContent).toBe(hdsSpy.testHero.name);
   });
 
-  it('should save stub hero change', fakeAsync(() => {
+  it('应该保存桩英雄数据的改变', fakeAsync(() => {
     const origName = hdsSpy.testHero.name;
     const newName = 'New Name';
 
@@ -110,15 +111,15 @@ function overrideSetup() {
     expect(page.navigateSpy.calls.any()).toBe(true, 'router.navigate called');
   }));
 
-  it('fixture injected service is not the component injected service',
+  it('fixture 注入的服务不是组件注入的服务',
     // inject gets the service from the fixture
     inject([HeroDetailService], (fixtureService: HeroDetailService) => {
 
-    // use `fixture.debugElement.injector` to get service from component
-    const componentService = fixture.debugElement.injector.get(HeroDetailService);
+      // use `fixture.debugElement.injector` to get service from component
+      const componentService = fixture.debugElement.injector.get(HeroDetailService);
 
-    expect(fixtureService).not.toBe(componentService, 'service injected from fixture');
-  }));
+      expect(fixtureService).not.toBe(componentService, 'service injected from fixture');
+    }));
 }
 
 ////////////////////
@@ -131,18 +132,18 @@ function heroModuleSetup() {
     const routerSpy = createRouterSpy();
 
     TestBed.configureTestingModule({
-      imports:   [ HeroModule ],
-  //  declarations: [ HeroDetailComponent ], // NO!  DOUBLE DECLARATION
+      imports: [HeroModule],
+      //  declarations: [ HeroDetailComponent ], // NO!  DOUBLE DECLARATION
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: HeroService,    useClass: TestHeroService },
-        { provide: Router,         useValue: routerSpy},
+        { provide: HeroService, useClass: TestHeroService },
+        { provide: Router, useValue: routerSpy },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
-  describe('when navigate to existing hero', () => {
+  describe('导航到存在的英雄详情页面', () => {
     let expectedHero: Hero;
 
     beforeEach(async(() => {
@@ -151,16 +152,16 @@ function heroModuleSetup() {
       createComponent();
     }));
 
-    it('should display that hero\'s name', () => {
+    it('应该显示英雄的名称', () => {
       expect(page.nameDisplay.textContent).toBe(expectedHero.name);
     });
 
-    it('should navigate when click cancel', () => {
+    it('点击取消后会进行导航', () => {
       click(page.cancelBtn);
       expect(page.navigateSpy.calls.any()).toBe(true, 'router.navigate called');
     });
 
-    it('should save when click save but not navigate immediately', () => {
+    it('点击保存后保存对象，但不立即跳转', () => {
       // Get service injected into component and spy on its`saveHero` method.
       // It delegates to fake `HeroService.updateHero` which delivers a safe test result.
       const hds = fixture.debugElement.injector.get(HeroDetailService);
@@ -171,13 +172,13 @@ function heroModuleSetup() {
       expect(page.navigateSpy.calls.any()).toBe(false, 'router.navigate not called');
     });
 
-    it('should navigate when click save and save resolves', fakeAsync(() => {
+    it('保存成功后进行跳转', fakeAsync(() => {
       click(page.saveBtn);
       tick(); // wait for async save to complete
       expect(page.navigateSpy.calls.any()).toBe(true, 'router.navigate called');
     }));
 
-    it('should convert hero name to Title Case', () => {
+    it('应该转换英雄名称为标题格式', () => {
       // get the name's input and display elements from the DOM
       const hostElement = fixture.nativeElement;
       const nameInput: HTMLInputElement = hostElement.querySelector('input');
@@ -196,40 +197,40 @@ function heroModuleSetup() {
     });
   });
 
-  describe('when navigate with no hero id', () => {
-    beforeEach(async( createComponent ));
+  describe('导航中没有英雄ID', () => {
+    beforeEach(async(createComponent));
 
-    it('should have hero.id === 0', () => {
+    it('英雄ID为0', () => {
       expect(component.hero.id).toBe(0);
     });
 
-    it('should display empty hero name', () => {
+    it('英雄名称显示为空', () => {
       expect(page.nameDisplay.textContent).toBe('');
     });
   });
 
-  describe('when navigate to non-existent hero id', () => {
+  describe('导航到不存在的英雄详情页面', () => {
     beforeEach(async(() => {
       activatedRoute.setParamMap({ id: 99999 });
       createComponent();
     }));
 
-    it('should try to navigate back to hero list', () => {
+    it('重定向到英雄列表页面', () => {
       expect(page.gotoListSpy.calls.any()).toBe(true, 'comp.gotoList called');
       expect(page.navigateSpy.calls.any()).toBe(true, 'router.navigate called');
     });
   });
 
   // Why we must use `fixture.debugElement.injector` in `Page()`
-  it('cannot use `inject` to get component\'s provided HeroDetailService', () => {
+  it('不能使用 `inject` 获取给组件提供服务的 HeroDetailService', () => {
     let service: HeroDetailService;
     fixture = TestBed.createComponent(HeroDetailComponent);
     expect(
       // Throws because `inject` only has access to TestBed's injector
       // which is an ancestor of the component's injector
-      inject([HeroDetailService], (hds: HeroDetailService) =>  service = hds )
+      inject([HeroDetailService], (hds: HeroDetailService) => service = hds)
     )
-    .toThrowError(/No provider for HeroDetailService/);
+      .toThrowError(/No provider for HeroDetailService/);
 
     // get `HeroDetailService` with component's own injector
     service = fixture.debugElement.injector.get(HeroDetailService);
@@ -238,23 +239,23 @@ function heroModuleSetup() {
 }
 
 /////////////////////
-import { FormsModule }         from '@angular/forms';
-import { TitleCasePipe }       from '../shared/title-case.pipe';
+import { FormsModule } from '@angular/forms';
+import { TitleCasePipe } from '../shared/title-case.pipe';
 
 function formsModuleSetup() {
   beforeEach(async(() => {
     const routerSpy = createRouterSpy();
 
     TestBed.configureTestingModule({
-      imports:      [ FormsModule ],
-      declarations: [ HeroDetailComponent, TitleCasePipe ],
+      imports: [FormsModule],
+      declarations: [HeroDetailComponent, TitleCasePipe],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: HeroService,    useClass: TestHeroService },
-        { provide: Router,         useValue: routerSpy},
+        { provide: HeroService, useClass: TestHeroService },
+        { provide: Router, useValue: routerSpy },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   it('should display 1st hero\'s name', async(() => {
@@ -267,22 +268,22 @@ function formsModuleSetup() {
 }
 
 ///////////////////////
-import { SharedModule }        from '../shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 
 function sharedModuleSetup() {
   beforeEach(async(() => {
     const routerSpy = createRouterSpy();
 
     TestBed.configureTestingModule({
-      imports:      [ SharedModule ],
-      declarations: [ HeroDetailComponent ],
+      imports: [SharedModule],
+      declarations: [HeroDetailComponent],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: HeroService,    useClass: TestHeroService },
-        { provide: Router,         useValue: routerSpy},
+        { provide: HeroService, useClass: TestHeroService },
+        { provide: Router, useValue: routerSpy },
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   it('should display 1st hero\'s name', async(() => {
@@ -312,18 +313,18 @@ function createComponent() {
 
 class Page {
   // getter properties wait to query the DOM until called.
-  get buttons()     { return this.queryAll<HTMLButtonElement>('button'); }
-  get saveBtn()     { return this.buttons[0]; }
-  get cancelBtn()   { return this.buttons[1]; }
+  get buttons() { return this.queryAll<HTMLButtonElement>('button'); }
+  get saveBtn() { return this.buttons[0]; }
+  get cancelBtn() { return this.buttons[1]; }
   get nameDisplay() { return this.query<HTMLElement>('span'); }
-  get nameInput()   { return this.query<HTMLInputElement>('input'); }
+  get nameInput() { return this.query<HTMLInputElement>('input'); }
 
   gotoListSpy: jasmine.Spy;
-  navigateSpy:  jasmine.Spy;
+  navigateSpy: jasmine.Spy;
 
   constructor(fixture: ComponentFixture<HeroDetailComponent>) {
     // get the navigate spy from the injected router spy object
-    const routerSpy = <any> fixture.debugElement.injector.get(Router);
+    const routerSpy = <any>fixture.debugElement.injector.get(Router);
     this.navigateSpy = routerSpy.navigate;
 
     // spy on component's `gotoList()` method

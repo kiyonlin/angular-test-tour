@@ -2,7 +2,7 @@ import { async, fakeAsync, ComponentFixture, TestBed, tick } from '@angular/core
 
 import { cold, getTestScheduler } from 'jasmine-marbles';
 
-import { TwainService }   from './twain.service';
+import { TwainService } from './twain.service';
 import { TwainComponent } from './twain.component';
 
 
@@ -26,8 +26,8 @@ describe('TwainComponent (marbles)', () => {
     getQuoteSpy = twainService.getQuote;
 
     TestBed.configureTestingModule({
-      declarations: [ TwainComponent ],
-      providers:    [
+      declarations: [TwainComponent],
+      providers: [
         { provide: TwainService, useValue: twainService }
       ]
     });
@@ -39,10 +39,12 @@ describe('TwainComponent (marbles)', () => {
   });
 
   // A synchronous test that simulates async behavior
-  it('should show quote after getQuote (marbles)', () => {
+  it('调用 getQuote (marbles) 后应该显示引述', () => {
     // observable test quote value and complete(), after delay
+    // 这个测试定义了一个冷的可观察对象，它等待三帧 (---)，然后发出一个值（x），然后结束（|）。 
+    // 在第二个参数中，把值标记（x）换成了实际发出的值（testQuote）。
     const q$ = cold('---x|', { x: testQuote });
-    getQuoteSpy.and.returnValue( q$ );
+    getQuoteSpy.and.returnValue(q$);
 
     fixture.detectChanges(); // ngOnInit()
     expect(quoteEl.textContent).toBe('...', 'should show placeholder');
@@ -56,10 +58,13 @@ describe('TwainComponent (marbles)', () => {
   });
 
   // Still need fakeAsync() because of component's setTimeout()
-  it('should display error when TwainService fails', fakeAsync(() => {
+  it('当调用 TwainService 失败后应该显示错误', fakeAsync(() => {
     // observable error after delay
+    // 它是一个冷的可观察对象，它等待三帧，然后发出一个错误。 
+    // 井号（#）标记出了发出错误的时间点，这个错误是在第三个参数中指定的。 
+    // 第二个参数是空的，因为这个可观察对象永远不会发出正常值。
     const q$ = cold('---#|', null, new Error('TwainService test failure'));
-    getQuoteSpy.and.returnValue( q$ );
+    getQuoteSpy.and.returnValue(q$);
 
     fixture.detectChanges(); // ngOnInit()
     expect(quoteEl.textContent).toBe('...', 'should show placeholder');
